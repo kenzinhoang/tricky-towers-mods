@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,17 +9,13 @@ namespace TrickyMultiplayerPlus
         public TimeAttackGameMode()
         {
             this._winningPlayerXPosModel = new DataModelFloat(false);
+            this._bricksUsedControllers = new List<BricksUsedController>();
+            this._bricksLeftControllers = new List<BricksLeftController>();
         }
 
-        // Thay vì brickLimit, chế độ này nhận timeLimit (mặc định 300 giây)
-        public float timeLimit { private get; set; } = 300f;
+        public int brickLimit { private get; set; }
         public string startSpell { private get; set; }
-
         public string[] ambientAudio { private get; set; }
-
-
-        private float _currentTimer;
-        private bool _isMatchEnded = false;
 
         protected override void _Init()
         {
@@ -29,69 +24,23 @@ namespace TrickyMultiplayerPlus
             Shader.SetGlobalColor("_WaterColor", ColorUtil.FromHex(2768553U));
             Shader.SetGlobalColor("_WaterLineColor", ColorUtil.FromHex(12106473U));
             Shader.EnableKeyword("WATER_ON");
-
-            // Sử dụng một điều kiện kết thúc chung của game
+            this._brickLimitEndCondition = new FirstCompoundCondition();
             this._endCondition = new FirstCompoundCondition();
+            this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
         }
 
-        public override void Setup()
-        {
-            base.Setup();
-            _currentTimer = timeLimit;
-            _isMatchEnded = false;
-        }
+        public override void Setup() { base.Setup(); }
 
         protected override void _InitStateControllers()
         {
             base._InitStateControllers();
-            // Ở đây mượn tạm PlayController mặc định, chúng ta sẽ ép kết thúc từ vòng lặp Update
-            this._gameModePlayController = new MultiPlayerTallestGameModePlayController(this._winningPlayerXPosModel, this._highestTowerModel, this._lowestTowerModel, this._dropSpeedController, 9999); // Truyền giới hạn gạch cực lớn để không bao giờ hết gạch trước thời gian
+            this._gameModePlayController = new MultiPlayerTimeAttackGameModePlayController(this._winningPlayerXPosModel, this._highestTowerModel, this._lowestTowerModel, this._dropSpeedController, this.brickLimit);
             this._gameModePlayController.countDownComplete += this._HandleCountDownComplete;
             this._gameModePlayController.countDownStarted += this._HandleCountDownStarted;
-
             this.AddStateController("EXPLANATION", new GameModeExplanationController(this._explanationId, this._showControls, "INTRO", this.skipExplanation));
-            this.AddStateController("INTRO", new MultiPlayerTallestGameModeIntroController("TIME_ATTACK", this.skipIntroduction, this.skipModeTitle));
+            this.AddStateController("INTRO", new MultiPlayerTimeAttackGameModeIntroController("TIME_ATTACK", this.skipIntroduction, this.skipModeTitle));
             this.AddStateController("COUNTDOWN", new RaceGameModeCountDownController(this._musicResources));
             this.AddStateController("PLAY", this._gameModePlayController);
-        }
-
-        // Vòng lặp đếm ngược thời gian 300s
-        public new void Update()
-        {
-            base.Update();
-
-            // Chỉ đếm ngược khi trạng thái game đang ở màn chơi chính (PLAY)
-            if (this.stateMachine.state == "PLAY" && !_isMatchEnded)
-            {
-                if (_currentTimer > 0)
-                {
-                    _currentTimer -= Time.deltaTime;
-
-                    // (Mẹo hiển thị UI) Tricky Towers sử dụng các HUD, bạn có thể truyền thời gian ra màn hình tại đây.
-                }
-                else
-                {
-                    _isMatchEnded = true;
-                    _currentTimer = 0;
-                    TriggerTimeAttackEnd();
-                }
-            }
-        }
-
-        // Hàm kích hoạt kết thúc trận khi hết 300 giây
-        private void TriggerTimeAttackEnd()
-        {
-            UnityEngine.Debug.Log("Time Attack: 300s over! Triggering match end.");
-
-            // Ép tất cả các controller của người chơi chuyển sang trạng thái kết thúc 
-            foreach (AbstractGameController abstractGameController in this._gameControllers)
-            {
-                this._gameControllersToEndRequest.Add(abstractGameController.id);
-            }
-            this._gameModeEnded = true;
-
-            // Gọi hàm kết thúc và tìm người cao nhất dựa trên thuật toán có sẵn của tác giả 
-            base._OnGameModeEndRequest(this._GetWinners());
         }
 
         protected override void _Cleanup()
@@ -111,10 +60,9 @@ namespace TrickyMultiplayerPlus
             base._Cleanup();
         }
 
-        public override float ModifyHorizontalMoveLimit(float limit)
-        {
-            return limit * 1.2f;
-        }
+        public override void GetSetup(NetworkWriter writer) { base.GetSetup(writer); }
+        public override void SetSetup(NetworkReader reader) { base.SetSetup(reader); }
+        public override float ModifyHorizontalMoveLimit(float limit) { return limit * 1.2f; }
 
         protected override void _AddGameController(AbstractGameController gameController)
         {
@@ -124,21 +72,39 @@ namespace TrickyMultiplayerPlus
         protected override void _FillGameModel(GameModel gameModel, AbstractGameController gameController)
         {
             base._FillGameModel(gameModel, gameController);
+            DataModelInt dataModelInt = new DataModelInt(false);
             gameModel.AddDataModel("WINNING_X_POS", this._winningPlayerXPosModel);
             gameModel.GetDataModel<DataModelString>("SPELL").value = this.startSpell;
             gameModel.AddDataModel("RANK", new DataModelInt(false));
 
-            // Giữ lại mô hình tính toán chiều cao tháp để game biết ai cao hơn 
             TowerHeightModel dataModel = gameModel.GetDataModel<TowerHeightModel>("TOWER_HEIGHT");
             DataModelFloat dummyTargetHeightModel = new DataModelFloat(false);
-            dummyTargetHeightModel.value = 9999; // Đặt vạch đích giả lên cực cao để không ai vô tình chạm trúng
+            dummyTargetHeightModel.value = 25;
             CompareConditionFloat value = new CompareConditionFloat(dataModel, dummyTargetHeightModel, ComparisonType.GREATER_THAN_OR_EQUAL, ValueDirection.FREE);
             this._towerHeightModels.Add(gameController.id, value);
 
+            CompareConditionInt compareConditionInt = new CompareConditionInt(dataModelInt, 0, ComparisonType.LESS_THAN_OR_EQUAL, ValueDirection.FREE);
             DataModelInt dataModelInt2 = new DataModelInt(false);
             dataModelInt2.value = 0;
             dataModelInt2.minValue = 0;
             gameModel.AddDataModel("BRICKS_USED", dataModelInt2);
+            BricksUsedController bricksUsedController = new BricksUsedController(dataModelInt2);
+            gameController.Inject(bricksUsedController);
+            this._bricksUsedControllers.Add(bricksUsedController);
+            if (this.brickLimit > 0)
+            {
+                DataModelInt dataModelInt3 = new DataModelInt(false);
+                dataModelInt3.value = this.brickLimit;
+                dataModelInt3.maxValue = this.brickLimit;
+                dataModelInt3.minValue = 0;
+                gameModel.AddDataModel("BRICK_LEFT", dataModelInt3);
+                BricksLeftController bricksLeftController = new BricksLeftController(dataModelInt3);
+                gameController.Inject(bricksLeftController);
+                this._bricksLeftControllers.Add(bricksLeftController);
+                CompareConditionInt compareConditionInt2 = new CompareConditionInt(dataModelInt3, 0, ComparisonType.LESS_THAN_OR_EQUAL, ValueDirection.FREE);
+                this._brickLimitEndCondition.AddCompareCondition(compareConditionInt2);
+                this._brickLeftModels.Add(gameController.id, compareConditionInt2);
+            }
         }
 
         protected override void _SetCustomGameStateControllers(AbstractGameController gameController)
@@ -155,21 +121,15 @@ namespace TrickyMultiplayerPlus
 
         protected override void _CreateHud(GameModel gameModel, AbstractGameController gameController, Rect viewPort)
         {
-            // Sử dụng SurvivalHUD hoặc RaceHUD tùy sở thích hiển thị của bạn
             AbstractHUD hud = new SurvivalHUD(gameModel, viewPort, gameController.id);
             gameController.SetHud(hud);
         }
 
         protected override BrickGuide _CreateBrickGuide(GameModel gameModel)
         {
-            return new BrickGuide(new Color(1f, 0.8666667f, 1f, 0.5f))
-            {
-                minBottom = -12.5f
-            }
-            ;
+            return new BrickGuide(new Color(1f, 0.8666667f, 1f, 0.5f)) { minBottom = -12.5f };
         }
 
-        // Kế thừa nguyên vẹn hàm tìm người thắng cuộc có tháp cao nhất từ tác giả cũ 
         private string[] _GetWinners()
         {
             string winner = "";
@@ -179,11 +139,7 @@ namespace TrickyMultiplayerPlus
                 GameModel gameModel = this._gameModels[text];
                 TowerHeightModel dataModel = gameModel.GetDataModel<TowerHeightModel>("TOWER_HEIGHT");
                 float value = dataModel.value;
-                if (value > num)
-                {
-                    num = value;
-                    winner = text;
-                }
+                if (value > num) { num = value; winner = text; }
             }
             return new string[] { winner };
         }
@@ -195,14 +151,8 @@ namespace TrickyMultiplayerPlus
             foreach (AbstractGameController abstractGameController in gameStates.Keys)
             {
                 string a = gameStates[abstractGameController];
-                if (a == "FINISH" || a == "WIN_REQUESTED")
-                {
-                    list.Add(abstractGameController);
-                }
-                else if (a == "FINISH_REQUESTED")
-                {
-                    list2.Add(abstractGameController);
-                }
+                if (a == "FINISH" || a == "WIN_REQUESTED") { list.Add(abstractGameController); }
+                else if (a == "FINISH_REQUESTED") { list2.Add(abstractGameController); }
             }
             foreach (AbstractGameController abstractGameController2 in list2)
             {
@@ -219,6 +169,37 @@ namespace TrickyMultiplayerPlus
             }
         }
 
+        protected override string _GetIdByCondition(AbstractCondition condition)
+        {
+            foreach (string text in this._brickLeftModels.Keys)
+            {
+                if (this._brickLeftModels[text] == condition) { return text; }
+            }
+            return base._GetIdByCondition(condition);
+        }
+
+        protected override float[] _GetTowerValues(string[] ids)
+        {
+            float[] array = new float[this._gameModels.Values.Count];
+            int num = 0;
+            foreach (GameModel gameModel in this._gameModels.Values)
+            {
+                array[num] = gameModel.GetDataModel<TowerHeightModel>("TOWER_HEIGHT").value;
+                num++;
+            }
+            return array;
+        }
+
+        protected override void _HandleGameModeEndConditionSuccess(AbstractCondition condition)
+        {
+            foreach (AbstractGameController abstractGameController in this._gameControllers)
+            {
+                this._gameControllersToEndRequest.Add(abstractGameController.id);
+            }
+            this._gameModeEnded = true;
+            base._OnGameModeEndRequest(this._GetWinners());
+        }
+
         private void _HandleCountDownComplete(AbstractGameController gameController)
         {
             base._OnGameEndRequest(gameController.id);
@@ -231,10 +212,7 @@ namespace TrickyMultiplayerPlus
                 bool flag = true;
                 foreach (AbstractGameController abstractGameController in this._gameControllers)
                 {
-                    if (!abstractGameController.finished)
-                    {
-                        flag = false;
-                    }
+                    if (!abstractGameController.finished) { flag = false; }
                 }
                 if (flag)
                 {
@@ -244,7 +222,11 @@ namespace TrickyMultiplayerPlus
             }
         }
 
-        private MultiPlayerTallestGameModePlayController _gameModePlayController;
+        private List<BricksUsedController> _bricksUsedControllers;
+        private List<BricksLeftController> _bricksLeftControllers;
+        private Dictionary<string, AbstractCondition> _brickLeftModels = new Dictionary<string, AbstractCondition>();
+        private AbstractCompoundCondition _brickLimitEndCondition;
+        private MultiPlayerTimeAttackGameModePlayController _gameModePlayController;
         private Dictionary<string, AbstractCondition> _towerHeightModels = new Dictionary<string, AbstractCondition>();
         private DataModelFloat _winningPlayerXPosModel;
     }

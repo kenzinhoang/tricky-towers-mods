@@ -6,12 +6,18 @@ namespace TrickyMultiplayerPlus
     {
         public TimeAttackGameModeFactory()
         {
-            this.ambientAudio = new string[] { "AMBIENCE_WATER" };
-            this.musicAudio = new MusicStruct[] { new MusicStruct("MUSIC_RACE", 1f) };
+            this.ambientAudio = new string[]
+            {
+                "AMBIENCE_WATER"
+            };
+            this.musicAudio = new MusicStruct[]
+            {
+                new MusicStruct("MUSIC_RACE", 1f)
+            };
             this.backgroundFactory = new BackgroundsFactory(new Type[]
             {
                 typeof(RaceBackground),
-                typeof(RaceForeground)
+                typeof(RaceForeground),
             });
             this.worldId = 0;
             this.floorFactory = new FloorFactory("FLOOR_LWS", 12.5f);
@@ -21,13 +27,13 @@ namespace TrickyMultiplayerPlus
         {
             return new TimeAttackGameMode
             {
-                timeLimit = this.timeLimit,
+                brickLimit = this.brickLimit,
                 startSpell = this.startSpell,
                 ambientAudio = this.ambientAudio
             };
         }
 
         public string startSpell;
-        public float timeLimit = 300f; // Đặt mặc định là 300 giây
+        public int brickLimit;
     }
 }

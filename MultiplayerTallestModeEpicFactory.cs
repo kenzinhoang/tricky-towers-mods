@@ -1,6 +1,7 @@
 ﻿namespace TrickyMultiplayerPlus
 {
-    public class MultiplayerTallestModeHeroicFactory : AbstractMulitplayerTallestModeFactory
+	//epic->heroic
+	public class MultiplayerTallestModeHeroicFactory : AbstractMulitplayerTallestModeFactory
 	{
 		public override TallestGameModeFactory Create()
 		{

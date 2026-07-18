@@ -2,7 +2,7 @@
 
 namespace TrickyMultiplayerPlus
 {
-    [HarmonyPatch(typeof(InitExplanationsCommand))]
+	[HarmonyPatch(typeof(InitExplanationsCommand))]
 	[HarmonyPatch("Execute")]
 	class RegisterNewExplanationsPatch
 	{
@@ -27,6 +27,24 @@ namespace TrickyMultiplayerPlus
 			instance.AddExplanation("MULTIPLAYER_TALLEST_HEROIC", new ExplanationStruct("EXPLANATION_TITLE_MULTIPLAYER_TALLEST", "EXPLANATION_MULTIPLAYER_TALLEST", "EXPLANATION_MODE_IMAGE_RACE", true, "HEROIC", null, null, null));
 			instance.AddExplanation("MULTIPLAYER_SURVIVAL_HEROIC", new ExplanationStruct("EXPLANATION_TITLE_MULTIPLAYER_SURVIVAL", "EXPLANATION_MULTIPLAYER_SURVIVAL", "EXPLANATION_MODE_IMAGE_SURVIVAL", true, "HEROIC", null, null, null));
 
+
+			//Time Attack
+			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_NORMAL", new ExplanationStruct("EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK", "EXPLANATION_MULTIPLAYER_TIME_ATTACK", "EXPLANATION_MODE_IMAGE_RACE", true, "NORMAL", null, null, null));
+
+			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_PRO", new ExplanationStruct(
+				"EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MODE_IMAGE_RACE", true, "PRO", null, null, null));
+
+			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_HEROIC", new ExplanationStruct(
+				"EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MODE_IMAGE_RACE", true, "HEROIC", null, null, null));
+
+			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_CRAZY", new ExplanationStruct(
+				"EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MULTIPLAYER_TIME_ATTACK",
+				"EXPLANATION_MODE_IMAGE_RACE", true, "CRAZY", null, null, null));
 			return true;
 		}
 	}

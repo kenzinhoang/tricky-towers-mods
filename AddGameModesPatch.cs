@@ -9,60 +9,6 @@ using HarmonyLib;
  */
 namespace TrickyMultiplayerPlus
 {
-	// [HarmonyPatch(typeof(InitMultiplayerRaceModeCommand))]
-	// [HarmonyPatch("Execute")]
-	// class AddNewRaceAndNewModesPatch
-	// {
-	// 	static AccessTools.FieldRef<InitMultiplayerRaceModeCommand, List<SelectModel>> localMultiplayerModesRef =
-	// 		AccessTools.FieldRefAccess<InitMultiplayerRaceModeCommand, List<SelectModel>>("_localMultiPlayerWorlds");
-
-	// 	static bool Prefix(InitMultiplayerRaceModeCommand __instance)
-	// 	{
-	// 		UnityEngine.Debug.Log("Patched race modes!");
-	// 		RaceGameModeFactory gameModeFactoryIn = new MultiplayerRaceModeEasyFactory().Create();
-	// 		RaceGameModeFactory gameModeFactoryIn2 = new MultiplayerRaceModeNormalFactory().Create();
-	// 		RaceGameModeFactory gameModeFactoryIn3 = new MultiplayerRaceModeProFactory().Create();
-	// 		RaceGameModeFactory customHeroicGameFactory = new MultiplayerRaceModeHeroicFactory().Create();
-	// 		RaceGameModeFactory crazyGameFactory = new MultiplayerRaceModeCrazyFactory().Create();
-	// 		BackgroundsFactory backgroundsFactoryIn = new BackgroundsFactory(new Type[]
-	// 		{
-	// 		typeof(RaceBackground),
-	// 		typeof(RaceForeground)
-	// 		});
-	// 		BackgroundsFactory backgroundsFactoryIn2 = new BackgroundsFactory(new Type[]
-	// 		{
-	// 		typeof(RaceProBackground),
-	// 		typeof(RaceProForeground)
-	// 		});
-	// 		WorldModel raceItem = new WorldModel("RACE", "MRW", "Race World", new List<SelectModel>
-	// 	{
-	// 		new MultiplayerGameModeModel("RACE_NORMAL", "Race Normal", gameModeFactoryIn2, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_RACE_NORMAL"),
-	// 		new MultiplayerGameModeModel("RACE_PRO", "Race Pro", gameModeFactoryIn3, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_RACE_PRO"),
-	// 		new MultiplayerGameModeModel("RACE_HEROIC", "Race Heroic", customHeroicGameFactory, backgroundsFactoryIn2, "HEROIC", "MULTIPLAYER_RACE_HEROIC"),
-	// 		new MultiplayerGameModeModel("RACE_CRAZY", "Race Crazy", crazyGameFactory, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_RACE_CRAZY")
-	// 	}, 0);
-
-	// 		UnityEngine.Debug.Log("Adding tallest modes!");
-
-	// 		TallestGameModeFactory tallestGameHeroic = new MultiplayerTallestModeHeroicFactory().Create();
-	// 		TallestGameModeFactory tallestGameMedium = new MultiplayerTallestModeMediumFactory().Create();
-	// 		TallestGameModeFactory tallestGamePro = new MultiplayerTallestModeProFactory().Create();
-	// 		TallestGameModeFactory tallestGameCrazy = new MultiplayerTallestModeCrazyFactory().Create();
-
-	// 		WorldModel tallestItem = new WorldModel("TALLEST", "MTW", "Tallest World", new List<SelectModel>
-	// 	{
-	// 		new MultiplayerGameModeModel("TALLEST_NORMAL", "Tallest Normal", tallestGameMedium, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_TALLEST_NORMAL"),
-	// 		new MultiplayerGameModeModel("TALLEST_PRO", "Tallest Pro", tallestGamePro, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_TALLEST_PRO"),
-	// 		new MultiplayerGameModeModel("TALLEST_HEROIC", "Tallest Heroic", tallestGameHeroic, backgroundsFactoryIn, "HEROIC", "MULTIPLAYER_TALLEST_HEROIC"),
-	// 		new MultiplayerGameModeModel("TALLEST_CRAZY", "Tallest Crazy", tallestGameCrazy, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_TALLEST_CRAZY")
-	// 	}, 0);
-	// 		localMultiplayerModesRef(__instance).Add(raceItem);
-	// 		localMultiplayerModesRef(__instance).Add(tallestItem);
-	// 		return false;
-	// 	}
-	// }
-
-
 	[HarmonyPatch(typeof(InitMultiplayerRaceModeCommand))]
 	[HarmonyPatch("Execute")]
 	class AddNewRaceAndNewModesPatch
@@ -70,61 +16,133 @@ namespace TrickyMultiplayerPlus
 		static AccessTools.FieldRef<InitMultiplayerRaceModeCommand, List<SelectModel>> localMultiplayerModesRef =
 			AccessTools.FieldRefAccess<InitMultiplayerRaceModeCommand, List<SelectModel>>("_localMultiPlayerWorlds");
 
-		// Chuyển từ Prefix sang Postfix để không chặn và không xóa dữ liệu gốc của game
-		static void Postfix(InitMultiplayerRaceModeCommand __instance)
+		static bool Prefix(InitMultiplayerRaceModeCommand __instance)
 		{
-			UnityEngine.Debug.Log("Patched race and tallest modes via Postfix!");
-
-			// 1. Khởi tạo các Factory và Background cần thiết cho các chế độ mới
+			UnityEngine.Debug.Log("Patched race modes!");
 			RaceGameModeFactory gameModeFactoryIn = new MultiplayerRaceModeEasyFactory().Create();
 			RaceGameModeFactory gameModeFactoryIn2 = new MultiplayerRaceModeNormalFactory().Create();
 			RaceGameModeFactory gameModeFactoryIn3 = new MultiplayerRaceModeProFactory().Create();
 			RaceGameModeFactory customHeroicGameFactory = new MultiplayerRaceModeHeroicFactory().Create();
 			RaceGameModeFactory crazyGameFactory = new MultiplayerRaceModeCrazyFactory().Create();
-
 			BackgroundsFactory backgroundsFactoryIn = new BackgroundsFactory(new Type[]
 			{
-				typeof(RaceBackground),
-				typeof(RaceForeground)
+			typeof(RaceBackground),
+			typeof(RaceForeground)
 			});
 			BackgroundsFactory backgroundsFactoryIn2 = new BackgroundsFactory(new Type[]
 			{
-				typeof(RaceProBackground),
-				typeof(RaceProForeground)
+			typeof(RaceProBackground),
+			typeof(RaceProForeground)
 			});
+			WorldModel raceItem = new WorldModel("RACE", "MRW", "Race World", new List<SelectModel>
+		{
+			new MultiplayerGameModeModel("RACE_NORMAL", "Race Normal", gameModeFactoryIn2, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_RACE_NORMAL"),
+			new MultiplayerGameModeModel("RACE_PRO", "Race Pro", gameModeFactoryIn3, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_RACE_PRO"),
+			new MultiplayerGameModeModel("RACE_HEROIC", "Race Heroic", customHeroicGameFactory, backgroundsFactoryIn2, "HEROIC", "MULTIPLAYER_RACE_HEROIC"),
+			new MultiplayerGameModeModel("RACE_CRAZY", "Race Crazy", crazyGameFactory, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_RACE_CRAZY")
+		}, 0);
+
+			UnityEngine.Debug.Log("Adding tallest modes!");
 
 			TallestGameModeFactory tallestGameHeroic = new MultiplayerTallestModeHeroicFactory().Create();
 			TallestGameModeFactory tallestGameMedium = new MultiplayerTallestModeMediumFactory().Create();
 			TallestGameModeFactory tallestGamePro = new MultiplayerTallestModeProFactory().Create();
 			TallestGameModeFactory tallestGameCrazy = new MultiplayerTallestModeCrazyFactory().Create();
 
-			// 2. Tạo các WorldModel chứa các chế độ chơi mới của bạn
-			WorldModel raceItem = new WorldModel("RACE", "MRW", "Race World", new List<SelectModel>
-			{
-				new MultiplayerGameModeModel("RACE_NORMAL", "Race Normal", gameModeFactoryIn2, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_RACE_NORMAL"),
-				new MultiplayerGameModeModel("RACE_PRO", "Race Pro", gameModeFactoryIn3, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_RACE_PRO"),
-				new MultiplayerGameModeModel("RACE_HEROIC", "Race Heroic", customHeroicGameFactory, backgroundsFactoryIn2, "HEROIC", "MULTIPLAYER_RACE_HEROIC"),
-				new MultiplayerGameModeModel("RACE_CRAZY", "Race Crazy", crazyGameFactory, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_RACE_CRAZY")
-			}, 0);
-
 			WorldModel tallestItem = new WorldModel("TALLEST", "MTW", "Tallest World", new List<SelectModel>
-			{
-				new MultiplayerGameModeModel("TALLEST_NORMAL", "Tallest Normal", tallestGameMedium, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_TALLEST_NORMAL"),
-				new MultiplayerGameModeModel("TALLEST_PRO", "Tallest Pro", tallestGamePro, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_TALLEST_PRO"),
-				new MultiplayerGameModeModel("TALLEST_HEROIC", "Tallest Heroic", tallestGameHeroic, backgroundsFactoryIn, "HEROIC", "MULTIPLAYER_TALLEST_HEROIC"),
-				new MultiplayerGameModeModel("TALLEST_CRAZY", "Tallest Crazy", tallestGameCrazy, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_TALLEST_CRAZY")
-			}, 0);
+		{
+			new MultiplayerGameModeModel("TALLEST_NORMAL", "Tallest Normal", tallestGameMedium, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_TALLEST_NORMAL"),
+			new MultiplayerGameModeModel("TALLEST_PRO", "Tallest Pro", tallestGamePro, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_TALLEST_PRO"),
+			new MultiplayerGameModeModel("TALLEST_HEROIC", "Tallest Heroic", tallestGameHeroic, backgroundsFactoryIn, "HEROIC", "MULTIPLAYER_TALLEST_HEROIC"),
+			new MultiplayerGameModeModel("TALLEST_CRAZY", "Tallest Crazy", tallestGameCrazy, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_TALLEST_CRAZY")
+		}, 0);
+			localMultiplayerModesRef(__instance).Add(raceItem);
+			localMultiplayerModesRef(__instance).Add(tallestItem);
 
-			// 3. Tiến hành chèn thêm vào danh sách hiện tại của game thay vì xóa trắng
-			var currentWorlds = localMultiplayerModesRef(__instance);
-			if (currentWorlds != null)
-			{
-				currentWorlds.Add(raceItem);
-				currentWorlds.Add(tallestItem);
-				UnityEngine.Debug.Log("Successfully added custom modes safely to the worlds list!");
-			}
+
+			UnityEngine.Debug.Log("Adding time attack modes!");
+
+			TimeAttackGameModeFactory timeAttackHeroic = new MultiplayerTimeAttackModeHeroicFactory().Create();
+			TimeAttackGameModeFactory timeAttackMedium = new MultiplayerTimeAttackModeMediumFactory().Create();
+			TimeAttackGameModeFactory timeAttackPro = new MultiplayerTimeAttackModeProFactory().Create();
+			TimeAttackGameModeFactory timeAttackCrazy = new MultiplayerTimeAttackModeCrazyFactory().Create();
+
+			WorldModel timeAttackItem = new WorldModel("TIME_ATTACK", "MTAW", "Time Attack World", new List<SelectModel>
+		{
+			new MultiplayerGameModeModel("TIME_ATTACK_NORMAL", "Time Attack Normal", timeAttackMedium, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_TIME_ATTACK_NORMAL"),
+			new MultiplayerGameModeModel("TIME_ATTACK_PRO", "Time Attack Pro", timeAttackPro, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_TIME_ATTACK_PRO"),
+			new MultiplayerGameModeModel("TIME_ATTACK_HEROIC", "Time Attack Heroic", timeAttackHeroic, backgroundsFactoryIn, "HEROIC", "MULTIPLAYER_TIME_ATTACK_HEROIC"),
+			new MultiplayerGameModeModel("TIME_ATTACK_CRAZY", "Time Attack Crazy", timeAttackCrazy, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_TIME_ATTACK_CRAZY")
+		}, 0);
+
+			localMultiplayerModesRef(__instance).Add(timeAttackItem);
+			return false;
 		}
 	}
+
+
+	// [HarmonyPatch(typeof(InitMultiplayerRaceModeCommand))]
+	// [HarmonyPatch("Execute")]
+	// class AddNewRaceAndNewModesPatch
+	// {
+	// 	static AccessTools.FieldRef<InitMultiplayerRaceModeCommand, List<SelectModel>> localMultiplayerModesRef =
+	// 		AccessTools.FieldRefAccess<InitMultiplayerRaceModeCommand, List<SelectModel>>("_localMultiPlayerWorlds");
+
+	// 	// Chuyển từ Prefix sang Postfix để không chặn và không xóa dữ liệu gốc của game
+	// 	static void Postfix(InitMultiplayerRaceModeCommand __instance)
+	// 	{
+	// 		UnityEngine.Debug.Log("Patched race and tallest modes via Postfix!");
+
+	// 		// 1. Khởi tạo các Factory và Background cần thiết cho các chế độ mới
+	// 		RaceGameModeFactory gameModeFactoryIn = new MultiplayerRaceModeEasyFactory().Create();
+	// 		RaceGameModeFactory gameModeFactoryIn2 = new MultiplayerRaceModeNormalFactory().Create();
+	// 		RaceGameModeFactory gameModeFactoryIn3 = new MultiplayerRaceModeProFactory().Create();
+	// 		RaceGameModeFactory customHeroicGameFactory = new MultiplayerRaceModeHeroicFactory().Create();
+	// 		RaceGameModeFactory crazyGameFactory = new MultiplayerRaceModeCrazyFactory().Create();
+
+	// 		BackgroundsFactory backgroundsFactoryIn = new BackgroundsFactory(new Type[]
+	// 		{
+	// 			typeof(RaceBackground),
+	// 			typeof(RaceForeground)
+	// 		});
+	// 		BackgroundsFactory backgroundsFactoryIn2 = new BackgroundsFactory(new Type[]
+	// 		{
+	// 			typeof(RaceProBackground),
+	// 			typeof(RaceProForeground)
+	// 		});
+
+	// 		TallestGameModeFactory tallestGameHeroic = new MultiplayerTallestModeHeroicFactory().Create();
+	// 		TallestGameModeFactory tallestGameMedium = new MultiplayerTallestModeMediumFactory().Create();
+	// 		TallestGameModeFactory tallestGamePro = new MultiplayerTallestModeProFactory().Create();
+	// 		TallestGameModeFactory tallestGameCrazy = new MultiplayerTallestModeCrazyFactory().Create();
+
+	// 		// 2. Tạo các WorldModel chứa các chế độ chơi mới của bạn
+	// 		WorldModel raceItem = new WorldModel("RACE", "MRW", "Race World", new List<SelectModel>
+	// 		{
+	// 			new MultiplayerGameModeModel("RACE_NORMAL", "Race Normal", gameModeFactoryIn2, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_RACE_NORMAL"),
+	// 			new MultiplayerGameModeModel("RACE_PRO", "Race Pro", gameModeFactoryIn3, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_RACE_PRO"),
+	// 			new MultiplayerGameModeModel("RACE_HEROIC", "Race Heroic", customHeroicGameFactory, backgroundsFactoryIn2, "HEROIC", "MULTIPLAYER_RACE_HEROIC"),
+	// 			new MultiplayerGameModeModel("RACE_CRAZY", "Race Crazy", crazyGameFactory, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_RACE_CRAZY")
+	// 		}, 0);
+
+	// 		WorldModel tallestItem = new WorldModel("TALLEST", "MTW", "Tallest World", new List<SelectModel>
+	// 		{
+	// 			new MultiplayerGameModeModel("TALLEST_NORMAL", "Tallest Normal", tallestGameMedium, backgroundsFactoryIn, "NORMAL", "MULTIPLAYER_TALLEST_NORMAL"),
+	// 			new MultiplayerGameModeModel("TALLEST_PRO", "Tallest Pro", tallestGamePro, backgroundsFactoryIn2, "PRO", "MULTIPLAYER_TALLEST_PRO"),
+	// 			new MultiplayerGameModeModel("TALLEST_HEROIC", "Tallest Heroic", tallestGameHeroic, backgroundsFactoryIn, "HEROIC", "MULTIPLAYER_TALLEST_HEROIC"),
+	// 			new MultiplayerGameModeModel("TALLEST_CRAZY", "Tallest Crazy", tallestGameCrazy, backgroundsFactoryIn, "CRAZY", "MULTIPLAYER_TALLEST_CRAZY")
+	// 		}, 0);
+
+	// 		// 3. Tiến hành chèn thêm vào danh sách hiện tại của game thay vì xóa trắng
+	// 		var currentWorlds = localMultiplayerModesRef(__instance);
+	// 		if (currentWorlds != null)
+	// 		{
+	// 			currentWorlds.Add(raceItem);
+	// 			currentWorlds.Add(tallestItem);
+	// 			UnityEngine.Debug.Log("Successfully added custom modes safely to the worlds list!");
+	// 		}
+	// 	}
+	// }
 
 	[HarmonyPatch(typeof(InitMultiPlayerPuzzleModeCommand))]
 	[HarmonyPatch("Execute")]

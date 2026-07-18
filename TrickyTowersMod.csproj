@@ -122,8 +122,14 @@
     <Compile Include="TallestGameMode.cs" />
     <Compile Include="TallestGameModeFactory.cs" />
 
-    <!-- <Compile Include="TimeAttackGameMode.cs" />
-    <Compile Include="TimeAttackGameModeFactory.cs" /> -->
+    <Compile Include="MultiPlayerTimeAttackGameModeIntroController.cs" />
+    <Compile Include="MultiPlayerTimeAttackGameModePlayController.cs" />
+    <Compile Include="MultiplayerTimeAttackModeCrazyFactory.cs" />
+    <Compile Include="MultiplayerTimeAttackModeHeroicFactory.cs" />
+    <Compile Include="MultiplayerTimeAttackModeMediumFactory.cs" />
+    <Compile Include="MultiplayerTimeAttackModeProFactory.cs" />
+    <Compile Include="TimeAttackGameMode.cs" />
+    <Compile Include="TimeAttackGameModeFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
