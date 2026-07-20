@@ -1,3 +1,4 @@
+//=======================================Time Attack=============================================
 namespace TrickyMultiplayerPlus
 {
     using System.Collections.Generic;
@@ -5,20 +6,73 @@ namespace TrickyMultiplayerPlus
 
     public class MultiPlayerTimeAttackGameModePlayController : MultiPlayerGameModePlayController
     {
-        public MultiPlayerTimeAttackGameModePlayController(DataModelFloat winningPlayerXPosModel, DataModelFloat highestTowerModel, DataModelFloat lowestTowerModel, DropSpeedController dropSpeedController, int brickLimit) : base(highestTowerModel, lowestTowerModel, dropSpeedController)
+        public MultiPlayerTimeAttackGameModePlayController(
+             DataModelFloat winningPlayerXPosModel,
+             DataModelFloat highestTowerModel,
+             DataModelFloat lowestTowerModel,
+             DropSpeedController dropSpeedController,
+             int brickLimit,
+             float matchDuration,
+             DataModelFloat timeLeftModel)
+            : base(highestTowerModel, lowestTowerModel, dropSpeedController)
         {
             this._winningPlayerXPosModel = winningPlayerXPosModel;
             this._highestTowerModel = highestTowerModel;
             this._brickLimit = brickLimit;
+            this._timeRemaining = matchDuration;
+            this._timeLeftModel = timeLeftModel;
         }
 
-        public override void UpdateController() { base.UpdateController(); }
+        private bool _loggedFirstPlayUpdate;
+        public override void UpdateController()
+        {
+            base.UpdateController();
+            if (!this._loggedFirstPlayUpdate)
+            {
+                UnityEngine.Debug.Log("[TA-DEBUG] PlayController first UpdateController, timeRemaining=" + this._timeRemaining);
+                this._loggedFirstPlayUpdate = true;
+            }
 
-        private void _EndGame() { Debug.Log("Game ended"); }
+            if (!this._timeIsUp)
+            {
+                this._timeRemaining -= Time.deltaTime;
+
+                // Cập nhật DataModel để HUD (đồng hồ cát) hiển thị đúng số giây còn lại
+                if (this._timeLeftModel != null)
+                {
+                    this._timeLeftModel.value = Mathf.Max(this._timeRemaining, 0f);
+                }
+
+                if (this._timeRemaining <= 0f)
+                {
+                    this._timeRemaining = 0f;
+                    this._timeIsUp = true;
+                    this._EndAllPlayersNow();
+                }
+            }
+        }
+
+        private void _EndAllPlayersNow()
+        {
+            foreach (AbstractGameController abstractGameController in this._gameControllers)
+            {
+                if (!abstractGameController.finished
+                    && !this._gameControllersInCountDown.Contains(abstractGameController))
+                {
+                    if (abstractGameController is LocalGameController)
+                    {
+                        ((LocalGameController)abstractGameController).DisableBrickSpawning();
+                    }
+                    this._StartCountDown(abstractGameController, false, false);
+                    this._gameControllersInCountDown.Add(abstractGameController);
+                }
+            }
+        }
 
         protected override void _CheckGamePlayRules()
         {
             base._CheckGamePlayRules();
+
             foreach (AbstractGameController abstractGameController in this._gameControllers)
             {
                 if (!abstractGameController.finished)
@@ -27,7 +81,8 @@ namespace TrickyMultiplayerPlus
                     TowerHeightModel dataModel = gameModel.GetDataModel<TowerHeightModel>("TOWER_HEIGHT");
                     if (dataModel.value == this._highestTowerModel.value)
                     {
-                        this._winningPlayerXPosModel.value = abstractGameController.zoomableCamera.camera.transform.position.x;
+                        this._winningPlayerXPosModel.value =
+                            abstractGameController.zoomableCamera.camera.transform.position.x;
                     }
                 }
             }
@@ -38,23 +93,8 @@ namespace TrickyMultiplayerPlus
                 list.Add(this._gameModels[abstractGameController2.id]);
             }
 
-            foreach (AbstractGameController abstractGameController in this._gameControllers)
-            {
-                if (!abstractGameController.finished)
-                {
-                    GameModel gameModel = this._gameModels[abstractGameController.id];
-                    int num2 = gameModel.GetDataModel<DataModelInt>("BRICKS_USED").value;
-                    if (num2 >= this._brickLimit && !this._gameControllersInCountDown.Contains(abstractGameController))
-                    {
-                        if (abstractGameController is LocalGameController)
-                        {
-                            ((LocalGameController)abstractGameController).DisableBrickSpawning();
-                        }
-                        this._StartCountDown(abstractGameController, false, false);
-                        this._gameControllersInCountDown.Add(abstractGameController);
-                    }
-                }
-            }
+            // Đã bỏ hoàn toàn đoạn check "BRICKS_USED >= brickLimit" —
+            // trận đấu giờ chỉ kết thúc bởi timer trong UpdateController() ở trên.
 
             this._UpdateTowerHeightInner(list);
             this._UpdateRankInner(list);
@@ -73,7 +113,8 @@ namespace TrickyMultiplayerPlus
             {
                 for (int j = 0; j < list.Count - 1; j++)
                 {
-                    if (list[j].GetDataModel<TowerHeightModel>("TOWER_HEIGHT").value < list[j + 1].GetDataModel<TowerHeightModel>("TOWER_HEIGHT").value)
+                    if (list[j].GetDataModel<TowerHeightModel>("TOWER_HEIGHT").value
+                        < list[j + 1].GetDataModel<TowerHeightModel>("TOWER_HEIGHT").value)
                     {
                         GameModel value = list[j + 1];
                         list[j + 1] = list[j];
@@ -100,7 +141,10 @@ namespace TrickyMultiplayerPlus
         }
 
         private int _brickLimit;
+        private float _timeRemaining;
+        private bool _timeIsUp;
         private DataModelFloat _winningPlayerXPosModel;
+        private DataModelFloat _timeLeftModel; // <-- thêm field
         private List<AbstractGameController> _gameControllersInCountDown = new List<AbstractGameController>();
     }
 }

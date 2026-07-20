@@ -1,3 +1,4 @@
+//=======================================Time Attack=============================================
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,6 +18,8 @@ namespace TrickyMultiplayerPlus
         public string startSpell { private get; set; }
         public string[] ambientAudio { private get; set; }
 
+        public float matchDuration { private get; set; } = 180f;
+
         protected override void _Init()
         {
             base._Init();
@@ -26,7 +29,11 @@ namespace TrickyMultiplayerPlus
             Shader.EnableKeyword("WATER_ON");
             this._brickLimitEndCondition = new FirstCompoundCondition();
             this._endCondition = new FirstCompoundCondition();
-            this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
+            //this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
+
+            // Tạo TIME_LEFT model sớm, trước khi _InitStateControllers() cần dùng tới nó
+            this._timeLeftModel = new DataModelFloat(false);
+            this._timeLeftModel.value = this.matchDuration;
         }
 
         public override void Setup() { base.Setup(); }
@@ -34,7 +41,14 @@ namespace TrickyMultiplayerPlus
         protected override void _InitStateControllers()
         {
             base._InitStateControllers();
-            this._gameModePlayController = new MultiPlayerTimeAttackGameModePlayController(this._winningPlayerXPosModel, this._highestTowerModel, this._lowestTowerModel, this._dropSpeedController, this.brickLimit);
+            this._gameModePlayController = new MultiPlayerTimeAttackGameModePlayController(
+                this._winningPlayerXPosModel,
+                this._highestTowerModel,
+                this._lowestTowerModel,
+                this._dropSpeedController,
+                this.brickLimit,
+                this.matchDuration,
+                this._timeLeftModel);
             this._gameModePlayController.countDownComplete += this._HandleCountDownComplete;
             this._gameModePlayController.countDownStarted += this._HandleCountDownStarted;
             this.AddStateController("EXPLANATION", new GameModeExplanationController(this._explanationId, this._showControls, "INTRO", this.skipExplanation));
@@ -69,10 +83,10 @@ namespace TrickyMultiplayerPlus
             gameController.stateChange += this._HandleGameControllerStateChanged;
         }
 
+        private bool _brickLimitConditionWired;
         protected override void _FillGameModel(GameModel gameModel, AbstractGameController gameController)
         {
             base._FillGameModel(gameModel, gameController);
-            DataModelInt dataModelInt = new DataModelInt(false);
             gameModel.AddDataModel("WINNING_X_POS", this._winningPlayerXPosModel);
             gameModel.GetDataModel<DataModelString>("SPELL").value = this.startSpell;
             gameModel.AddDataModel("RANK", new DataModelInt(false));
@@ -83,7 +97,9 @@ namespace TrickyMultiplayerPlus
             CompareConditionFloat value = new CompareConditionFloat(dataModel, dummyTargetHeightModel, ComparisonType.GREATER_THAN_OR_EQUAL, ValueDirection.FREE);
             this._towerHeightModels.Add(gameController.id, value);
 
-            CompareConditionInt compareConditionInt = new CompareConditionInt(dataModelInt, 0, ComparisonType.LESS_THAN_OR_EQUAL, ValueDirection.FREE);
+            UnityEngine.Debug.Log("[TA-DEBUG] _FillGameModel: adding TIME_LEFT, id=" + gameController.id);
+            gameModel.AddDataModel("TIME_LEFT", this._timeLeftModel);
+
             DataModelInt dataModelInt2 = new DataModelInt(false);
             dataModelInt2.value = 0;
             dataModelInt2.minValue = 0;
@@ -104,6 +120,12 @@ namespace TrickyMultiplayerPlus
                 CompareConditionInt compareConditionInt2 = new CompareConditionInt(dataModelInt3, 0, ComparisonType.LESS_THAN_OR_EQUAL, ValueDirection.FREE);
                 this._brickLimitEndCondition.AddCompareCondition(compareConditionInt2);
                 this._brickLeftModels.Add(gameController.id, compareConditionInt2);
+                // Chỉ kích hoạt điều kiện kết thúc theo brickLimit khi thực sự có brickLimit > 0
+                if (!this._brickLimitConditionWired)
+                {
+                    this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
+                    this._brickLimitConditionWired = true;
+                }
             }
         }
 
@@ -121,8 +143,10 @@ namespace TrickyMultiplayerPlus
 
         protected override void _CreateHud(GameModel gameModel, AbstractGameController gameController, Rect viewPort)
         {
-            AbstractHUD hud = new SurvivalHUD(gameModel, viewPort, gameController.id);
+            UnityEngine.Debug.Log("[TA-DEBUG] _CreateHud START, id=" + gameController.id);
+            AbstractHUD hud = new TimeAttackHUD(gameModel, viewPort, gameController.id);
             gameController.SetHud(hud);
+            UnityEngine.Debug.Log("[TA-DEBUG] _CreateHud END, id=" + gameController.id);
         }
 
         protected override BrickGuide _CreateBrickGuide(GameModel gameModel)
@@ -229,5 +253,6 @@ namespace TrickyMultiplayerPlus
         private MultiPlayerTimeAttackGameModePlayController _gameModePlayController;
         private Dictionary<string, AbstractCondition> _towerHeightModels = new Dictionary<string, AbstractCondition>();
         private DataModelFloat _winningPlayerXPosModel;
+        private DataModelFloat _timeLeftModel;
     }
 }

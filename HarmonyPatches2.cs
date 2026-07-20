@@ -18,6 +18,7 @@ namespace TrickyTowersMod
 			UnityEngine.Debug.Log("Hello, world!");
 			var harmony = new Harmony("trickytowersmod");
 			harmony.PatchAll();
+			TimeAttackMod.Patches.AbstractEffectDebugPatch.Log = Logger;
 		}
 	}
 

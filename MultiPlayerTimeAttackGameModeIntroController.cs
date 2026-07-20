@@ -2,6 +2,7 @@ namespace TrickyMultiplayerPlus
 {
     using System.Collections.Generic;
 
+    //=======================================Time Attack=============================================
     internal class MultiPlayerTimeAttackGameModeIntroController : AbstractMultiPlayerGameModeIntroController, IHUDInjectable, IGameModelInjectable, IGameDataInjectable, IBrickPickerInjectable, IInjectable
     {
         public MultiPlayerTimeAttackGameModeIntroController(string gameType, bool skipIntroduction = false, bool skipModeTitle = false) : base(gameType, skipIntroduction, skipModeTitle)
@@ -16,23 +17,33 @@ namespace TrickyMultiplayerPlus
 
         public override void Enable(string prevStateName, object data = null)
         {
+            UnityEngine.Debug.Log("[TA-DEBUG] IntroController Enable, prevState=" + prevStateName);
+            UnityEngine.Debug.Log("[TA-DEBUG-TIMESCALE] at Enable() START, Time.timeScale=" + UnityEngine.Time.timeScale); // <-- THÊM DÒNG NÀY
             base.Enable(prevStateName, data);
+            UnityEngine.Debug.Log("[TA-DEBUG-v2] after base.Enable, brickLeftModels.Count=" + this._brickLeftModels.Count);
             if (!this._skipIntroduction)
             {
+                UnityEngine.Debug.Log("[TA-DEBUG-v2] entering intro block, skipIntroduction=false");
                 for (int i = 0; i < this._huds.Count; i++)
                 {
                     AbstractHUD abstractHUD = this._huds[i];
                     BricksToPlaceView view = abstractHUD.GetView<BricksToPlaceView>();
                     if (view != null) { view.ForceShowValue(0); }
                 }
-                int value = this._brickLeftModels[0].value;
+                UnityEngine.Debug.Log("[TA-DEBUG-v2] before accessing brickLeftModels[0]");
+                int value = this._brickLeftModels.Count > 0 ? this._brickLeftModels[0].value : 0;
+                UnityEngine.Debug.Log("[TA-DEBUG-v2] got value=" + value);
                 for (int j = 0; j < this._huds.Count; j++)
                 {
-                    bool waitUntilComplete = j == this._brickLeftModels.Count - 1;
+                    bool waitUntilComplete = this._brickLeftModels.Count > 0
+                        ? (j == this._brickLeftModels.Count - 1)
+                        : (j == this._huds.Count - 1);
                     HudShowEffect hudShowEffect = new HudShowEffect(waitUntilComplete);
                     hudShowEffect.SetHud(this._huds[j]);
                     this._effectRunner.AddEffect(hudShowEffect);
                 }
+                UnityEngine.Debug.Log("[TA-DEBUG-v2] hud show effects added, brickPickers.Count=" + this._brickPickers.Count);
+                UnityEngine.Debug.Log("[TA-DEBUG-TIMESCALE] before AnimateBrickCountEffect loop, Time.timeScale=" + UnityEngine.Time.timeScale); // <-- THÊM DÒNG NÀY
                 for (int k = 0; k < this._brickLeftModels.Count; k++)
                 {
                     this._nextBrickModels[k].value = this._brickPickers[k].ChooseBrick();
@@ -43,8 +54,11 @@ namespace TrickyMultiplayerPlus
                     this._effectRunner.AddEffect(animateBrickCountEffect);
                 }
                 this._effectRunner.AddEffect(new DelayEffect(0.3f, true));
+                UnityEngine.Debug.Log("[TA-DEBUG-v2] intro block done");
             }
+            UnityEngine.Debug.Log("[TA-DEBUG-v2] adding GotoCountdownState delegate effect");
             this._effectRunner.AddEffect(new DelegateEffect(new DelegateEffect.EffectDelegate(this._GotoCountdownState)));
+            UnityEngine.Debug.Log("[TA-DEBUG-v2] Enable() END");
         }
 
         public void SetBrickPicker(IBrickPicker brickPicker)
@@ -72,6 +86,7 @@ namespace TrickyMultiplayerPlus
 
         private void _GotoCountdownState()
         {
+            UnityEngine.Debug.Log("[TA-DEBUG] IntroController: changing to COUNTDOWN state");
             ((StateMachineFlowController)this._stateFlowController).stateMachine.ChangeState("COUNTDOWN", null);
         }
 

@@ -28,7 +28,7 @@ namespace TrickyMultiplayerPlus
 			instance.AddExplanation("MULTIPLAYER_SURVIVAL_HEROIC", new ExplanationStruct("EXPLANATION_TITLE_MULTIPLAYER_SURVIVAL", "EXPLANATION_MULTIPLAYER_SURVIVAL", "EXPLANATION_MODE_IMAGE_SURVIVAL", true, "HEROIC", null, null, null));
 
 
-			//Time Attack
+			//=======================================Time Attack=============================================
 			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_NORMAL", new ExplanationStruct("EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK", "EXPLANATION_MULTIPLAYER_TIME_ATTACK", "EXPLANATION_MODE_IMAGE_RACE", true, "NORMAL", null, null, null));
 
 			instance.AddExplanation("MULTIPLAYER_TIME_ATTACK_PRO", new ExplanationStruct(
@@ -45,6 +45,7 @@ namespace TrickyMultiplayerPlus
 				"EXPLANATION_TITLE_MULTIPLAYER_TIME_ATTACK",
 				"EXPLANATION_MULTIPLAYER_TIME_ATTACK",
 				"EXPLANATION_MODE_IMAGE_RACE", true, "CRAZY", null, null, null));
+			//=======================================Time Attack=============================================
 			return true;
 		}
 	}

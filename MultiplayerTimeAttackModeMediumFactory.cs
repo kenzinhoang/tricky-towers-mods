@@ -1,5 +1,6 @@
 namespace TrickyMultiplayerPlus
 {
+    //=======================================Time Attack=============================================
     public class MultiplayerTimeAttackModeMediumFactory : AbstractMulitplayerTimeAttackModeFactory
     {
         public override TimeAttackGameModeFactory Create()
@@ -7,9 +8,9 @@ namespace TrickyMultiplayerPlus
             return new TimeAttackGameModeFactory()
             {
                 dropSpeedControllerFactory = new DropSpeedControllerFactory(2f),
-                brickPickerFactory = new SharedRandomNamedBrickPickerFactory(null, -1, 35),
+                brickPickerFactory = new SharedRandomNamedBrickPickerFactory(null, -1, 9999),
                 startSpell = "LARGE_SELF",
-                brickLimit = 35,
+                brickLimit = 9999,
                 windStrengthMax = 0f,
                 windStrengthMin = 0f
             };

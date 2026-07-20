@@ -32,10 +32,12 @@ namespace TrickyMultiplayerPlus
 			__instance.RegisterLanguage("MULTIPLAYER_RACE_HEROIC", "Custom Heroic", false, true);
 			__instance.RegisterLanguage("MULTIPLAYER_RACE_CRAZY", "Custom Crazy", false, true);
 
+			//=======================================Time Attack=============================================
 			__instance.RegisterLanguage("MULTIPLAYER_TALLEST_NORMAL", "T-Custom Normal", false, true);
 			__instance.RegisterLanguage("MULTIPLAYER_TALLEST_PRO", "T-Custom Pro", false, true);
 			__instance.RegisterLanguage("MULTIPLAYER_TALLEST_HEROIC", "T-Custom Heroic", false, true);
 			__instance.RegisterLanguage("MULTIPLAYER_TALLEST_CRAZY", "T-Custom Crazy", false, true);
+			//=======================================Time Attack=============================================
 
 			return;
 		}
