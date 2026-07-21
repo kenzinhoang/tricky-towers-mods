@@ -135,7 +135,8 @@
     <Compile Include="CountdownDisplay.cs" />
     <Compile Include="AbstractEffectDebugPatch.cs" />
     <Compile Include="AnimateBrickCountEffectPatch.cs" />
-    
+    <Compile Include="ClockStyleExtractor.cs" />
+    <Compile Include="SharedClockManager.cs" />
    <!-- =======================================Time Attack============================================= -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

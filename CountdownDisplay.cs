@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 namespace TrickyMultiplayerPlus
 {
@@ -7,13 +7,13 @@ namespace TrickyMultiplayerPlus
     {
         public GameModel gameModel;
         private DataModelFloat _timeLeftModel;
-        private Text _text;
+        private TextMeshProUGUI _text;
         private bool _loggedFirstUpdate;
 
         private void Awake()
         {
             UnityEngine.Debug.Log("[TA-DEBUG] CountdownDisplay Awake");
-            this._text = base.GetComponent<Text>();
+            this._text = base.GetComponent<TextMeshProUGUI>();
         }
 
         private void Update()
@@ -41,9 +41,7 @@ namespace TrickyMultiplayerPlus
             if (this._timeLeftModel == null || this._text == null) { return; }
 
             float t = Mathf.Max(this._timeLeftModel.value, 0f);
-            int minutes = Mathf.FloorToInt(t / 60f);
-            int seconds = Mathf.FloorToInt(t % 60f);
-            this._text.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+            this._text.text = TimeUtil.FormatTime(t, false);
         }
     }
 }

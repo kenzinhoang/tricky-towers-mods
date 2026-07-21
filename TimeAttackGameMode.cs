@@ -72,6 +72,7 @@ namespace TrickyMultiplayerPlus
                 }
             }
             base._Cleanup();
+            SharedClockManager.DestroyClock();
         }
 
         public override void GetSetup(NetworkWriter writer) { base.GetSetup(writer); }
