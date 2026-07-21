@@ -1,13 +1,12 @@
 namespace TrickyMultiplayerPlus
 {
-    //=======================================Time Attack=============================================
-    //epic->heroic
     public class MultiplayerTimeAttackModeHeroicFactory : AbstractMulitplayerTimeAttackModeFactory
     {
         public override TimeAttackGameModeFactory Create()
         {
             return new TimeAttackGameModeFactory()
             {
+                matchDuration = 180f,
                 dropSpeedControllerFactory = new DropSpeedControllerFactory(2f),
                 brickPickerFactory = new SharedRandomNamedBrickPickerFactory(null, -1, 9999),
                 startSpell = "IVY",

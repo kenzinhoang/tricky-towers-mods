@@ -2,7 +2,6 @@ using System;
 
 namespace TrickyMultiplayerPlus
 {
-    //=======================================Time Attack=============================================
     public class TimeAttackGameModeFactory : AbstractSinglePlayerGameModeFactory
     {
         public TimeAttackGameModeFactory()
@@ -24,14 +23,15 @@ namespace TrickyMultiplayerPlus
             this.floorFactory = new FloorFactory("FLOOR_LWS", 12.5f);
         }
 
-        public float matchDuration = 300f;
+        public float matchDuration;
         protected override AbstractGameMode _CreateGameMode()
         {
             return new TimeAttackGameMode
             {
                 brickLimit = this.brickLimit,
                 startSpell = this.startSpell,
-                ambientAudio = this.ambientAudio
+                ambientAudio = this.ambientAudio,
+                matchDuration = this.matchDuration
             };
         }
 

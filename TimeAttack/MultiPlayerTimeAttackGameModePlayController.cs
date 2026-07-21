@@ -1,4 +1,3 @@
-//=======================================Time Attack=============================================
 namespace TrickyMultiplayerPlus
 {
     using System.Collections.Generic;
@@ -37,7 +36,6 @@ namespace TrickyMultiplayerPlus
             {
                 this._timeRemaining -= Time.deltaTime;
 
-                // Cập nhật DataModel để HUD (đồng hồ cát) hiển thị đúng số giây còn lại
                 if (this._timeLeftModel != null)
                 {
                     this._timeLeftModel.value = Mathf.Max(this._timeRemaining, 0f);
@@ -93,9 +91,6 @@ namespace TrickyMultiplayerPlus
                 list.Add(this._gameModels[abstractGameController2.id]);
             }
 
-            // Đã bỏ hoàn toàn đoạn check "BRICKS_USED >= brickLimit" —
-            // trận đấu giờ chỉ kết thúc bởi timer trong UpdateController() ở trên.
-
             this._UpdateTowerHeightInner(list);
             this._UpdateRankInner(list);
         }
@@ -144,7 +139,7 @@ namespace TrickyMultiplayerPlus
         private float _timeRemaining;
         private bool _timeIsUp;
         private DataModelFloat _winningPlayerXPosModel;
-        private DataModelFloat _timeLeftModel; // <-- thêm field
+        private DataModelFloat _timeLeftModel;
         private List<AbstractGameController> _gameControllersInCountDown = new List<AbstractGameController>();
     }
 }

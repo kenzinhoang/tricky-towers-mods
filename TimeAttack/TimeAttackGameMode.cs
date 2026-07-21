@@ -1,4 +1,3 @@
-//=======================================Time Attack=============================================
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -18,7 +17,7 @@ namespace TrickyMultiplayerPlus
         public string startSpell { private get; set; }
         public string[] ambientAudio { private get; set; }
 
-        public float matchDuration { private get; set; } = 180f;
+        public float matchDuration { private get; set; }
 
         protected override void _Init()
         {
@@ -31,7 +30,6 @@ namespace TrickyMultiplayerPlus
             this._endCondition = new FirstCompoundCondition();
             //this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
 
-            // Tạo TIME_LEFT model sớm, trước khi _InitStateControllers() cần dùng tới nó
             this._timeLeftModel = new DataModelFloat(false);
             this._timeLeftModel.value = this.matchDuration;
         }
@@ -121,7 +119,6 @@ namespace TrickyMultiplayerPlus
                 CompareConditionInt compareConditionInt2 = new CompareConditionInt(dataModelInt3, 0, ComparisonType.LESS_THAN_OR_EQUAL, ValueDirection.FREE);
                 this._brickLimitEndCondition.AddCompareCondition(compareConditionInt2);
                 this._brickLeftModels.Add(gameController.id, compareConditionInt2);
-                // Chỉ kích hoạt điều kiện kết thúc theo brickLimit khi thực sự có brickLimit > 0
                 if (!this._brickLimitConditionWired)
                 {
                     this._endCondition.AddCompareCondition(this._brickLimitEndCondition);
