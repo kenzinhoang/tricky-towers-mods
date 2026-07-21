@@ -4,7 +4,7 @@ namespace TrickyMultiplayerPlus
     {
         public override TimeAttackGameModeFactory Create()
         {
-            return new TimeAttackGameModeFactory()
+            var factory = new TimeAttackGameModeFactory()
             {
                 matchDuration = 300f,
                 dropSpeedControllerFactory = new DropSpeedControllerFactory(2f),
@@ -15,6 +15,10 @@ namespace TrickyMultiplayerPlus
                 windStrengthMax = 0f,
                 windStrengthMin = 0f
             };
+
+            factory.WithSpells(ModeDifficulty.Crazy, SpellProfileKind.HeightOnly);
+
+            return factory;
         }
     }
 }

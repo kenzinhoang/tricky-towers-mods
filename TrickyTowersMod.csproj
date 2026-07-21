@@ -152,6 +152,14 @@
     <Compile Include="AbstractEffectDebugPatch.cs" />
     <Compile Include="AnimateBrickCountEffectPatch.cs" />
 <!-- ******************************************************************************************* -->
+
+
+
+<!--=======================================Spell============================================= -->
+    <Compile Include="Spell_mod\SpellTuning.cs" />
+    <Compile Include="Spell_mod\SpellPickerBuilder.cs" />
+    <Compile Include="Spell_mod\SharedSpellMappings.cs" />
+<!-- ******************************************************************************************* -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

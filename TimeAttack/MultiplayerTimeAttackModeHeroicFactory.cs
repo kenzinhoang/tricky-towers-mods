@@ -4,9 +4,9 @@ namespace TrickyMultiplayerPlus
     {
         public override TimeAttackGameModeFactory Create()
         {
-            return new TimeAttackGameModeFactory()
+            var factory = new TimeAttackGameModeFactory()
             {
-                matchDuration = 180f,
+                matchDuration = 180f, //game time
                 dropSpeedControllerFactory = new DropSpeedControllerFactory(2f),
                 brickPickerFactory = new SharedRandomNamedBrickPickerFactory(null, -1, 9999),
                 startSpell = "IVY",
@@ -15,6 +15,10 @@ namespace TrickyMultiplayerPlus
                 windStrengthMax = 0f,
                 windStrengthMin = 0f
             };
+            // Dòng DUY NHẤT cần thêm để có spell, tự tinh chỉnh theo độ khó Pro:
+            factory.WithSpells(ModeDifficulty.Heroic, SpellProfileKind.HeightOnly);
+
+            return factory;
         }
     }
 }

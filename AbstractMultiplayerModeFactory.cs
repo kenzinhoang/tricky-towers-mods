@@ -13,6 +13,9 @@ namespace TrickyMultiplayerPlus
 	//TA note
 	public abstract class AbstractMulitplayerTimeAttackModeFactory
 	{
-		public virtual TimeAttackGameModeFactory Create() { throw new NotImplementedException(); }
+		public virtual TimeAttackGameModeFactory Create()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
