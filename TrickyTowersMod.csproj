@@ -112,29 +112,29 @@
 <!-- ******************************************************************************************* -->
 
 <!--=======================================Puzzle============================================= -->
-    <Compile Include="MultiplayerPuzzleModeCrazyFactory.cs" />
-    <Compile Include="MultiplayerPuzzleModeHeroicFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerPuzzleModeCrazyFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerPuzzleModeHeroicFactory.cs" />
 <!-- ******************************************************************************************* -->
 
 <!--=======================================Race============================================= -->
-    <Compile Include="MultiplayerRaceModeCrazyFactory.cs" />
-    <Compile Include="MultiplayerRaceModeEpicFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerRaceModeCrazyFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerRaceModeEpicFactory.cs" />
 <!-- ******************************************************************************************* -->
 
 <!--=======================================Survival============================================= -->
-    <Compile Include="MultiplayerSurvivalModeCrazyFactory.cs" />
-    <Compile Include="MultiplayerSurvivalModeEpicFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerSurvivalModeCrazyFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerSurvivalModeEpicFactory.cs" />
 <!-- ******************************************************************************************* -->
 
 <!--=======================================Tallest============================================= -->
-    <Compile Include="TallestGameMode.cs" />
-    <Compile Include="TallestGameModeFactory.cs" />
-    <Compile Include="MultiPlayerTallestGameModeIntroController.cs" />
-    <Compile Include="MultiPlayerTallestGameModePlayController.cs" />
-    <Compile Include="MultiplayerTallestModeCrazyFactory.cs" />
-    <Compile Include="MultiplayerTallestModeEpicFactory.cs" />
-    <Compile Include="MultiplayerTallestModeMediumFactory.cs" />
-    <Compile Include="MultiplayerTallestModeProFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\TallestGameMode.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\TallestGameModeFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiPlayerTallestGameModeIntroController.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiPlayerTallestGameModePlayController.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerTallestModeCrazyFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerTallestModeEpicFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerTallestModeMediumFactory.cs" />
+    <Compile Include="Tallest_Herotic_Crazy\MultiplayerTallestModeProFactory.cs" />
 <!-- ******************************************************************************************* -->
 
 
