@@ -1,0 +1,7 @@
+D:\SteamLibrary\steamapps\common\Tricky Towers\BepInEx\plugins\TrickyTowersMod.dll
+D:\SteamLibrary\steamapps\common\Tricky Towers\BepInEx\plugins\TrickyTowersMod.pdb
+D:\Modding game\Unity_trickyTower\New folder\tricky-multiplayer-plus-release\obj\Debug\TrickyTowersMod_v1.2.csproj.AssemblyReference.cache
+D:\Modding game\Unity_trickyTower\New folder\tricky-multiplayer-plus-release\obj\Debug\TrickyTowersMod_v1.2.csproj.CoreCompileInputs.cache
+D:\Modding game\Unity_trickyTower\New folder\tricky-multiplayer-plus-release\obj\Debug\TrickyTo.330BB12B.Up2Date
+D:\Modding game\Unity_trickyTower\New folder\tricky-multiplayer-plus-release\obj\Debug\TrickyTowersMod.dll
+D:\Modding game\Unity_trickyTower\New folder\tricky-multiplayer-plus-release\obj\Debug\TrickyTowersMod.pdb
