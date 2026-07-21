@@ -132,11 +132,9 @@
     <Compile Include="TimeAttackGameMode.cs" />
     <Compile Include="TimeAttackGameModeFactory.cs" />
     <Compile Include="TimeAttackHUD.cs" />
-    <Compile Include="CountdownDisplay.cs" />
+    <Compile Include="TimeAttackClock.cs" />
     <Compile Include="AbstractEffectDebugPatch.cs" />
     <Compile Include="AnimateBrickCountEffectPatch.cs" />
-    <Compile Include="ClockStyleExtractor.cs" />
-    <Compile Include="SharedClockManager.cs" />
    <!-- =======================================Time Attack============================================= -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
