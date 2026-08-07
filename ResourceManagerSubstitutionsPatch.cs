@@ -12,7 +12,7 @@ namespace TrickyMultiplayerPlus
     [HarmonyPatch(typeof(ResourceManager))]
     [HarmonyPatch(MethodType.Normal)]
     [HarmonyPatch("InstantiateByName")]
-    [HarmonyPatch(new Type[] {typeof(string), typeof(Vector3), typeof(GameObject) })]
+    [HarmonyPatch(new Type[] { typeof(string), typeof(Vector3), typeof(GameObject) })]
     public class ResourceManagerSubstitutionsPatch
     {
 
@@ -21,6 +21,10 @@ namespace TrickyMultiplayerPlus
             if (resourceName == "MODE_SELECT_MODE_ITEM_TALLEST")
             {
                 replaceSprite("assets/tallest/gph_menuModeTallest.png", __result);
+            }
+            else if (resourceName == "MODE_SELECT_MODE_ITEM_TIME_ATTACK")
+            {
+                replaceSprite("assets/timeattack/gph_menuModeTimeAttack.png", __result);
             }
             else if (resourceName == "MODE_SELECT_DIFFICULTY_ITEM_CRAZY")
             {

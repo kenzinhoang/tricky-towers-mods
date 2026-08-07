@@ -11,9 +11,9 @@ namespace TrickyMultiplayerPlus
 			UnityEngine.Debug.Log("Patching strings accurately to prevent NullReferenceException.");
 
 			// Tên World (tab lớn) - key theo quy tắc "MODE_" + worldId
-			__instance.RegisterLanguage("MODE_TALLEST", "Cao vcl", false, true);
+			__instance.RegisterLanguage("MODE_TALLEST", "Tallest", false, true);
 			__instance.RegisterLanguage("MODE_RACE_CUSTOM", "Race Custom", false, true);
-			__instance.RegisterLanguage("MODE_TIME_ATTACK", "Map Dit", false, true);
+			__instance.RegisterLanguage("MODE_TIME_ATTACK", "Time Attack", false, true);
 
 			// Explanation title/mô tả cho các world mới
 			__instance.RegisterLanguage("EXPLANATION_TITLE_MULTIPLAYER_TALLEST", "Tallest Battle", false, true);

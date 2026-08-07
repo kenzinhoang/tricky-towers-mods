@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3064328398
+CRC: 2970480727
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 883daa49774d29a7510179d998cc30fb
+    Hash: 1327e8d901d1f3e3efd6e004e16259fc
   TypeTreeHash:
     serializedVersion: 2
     Hash: 4d24bf54f46935ed9e6cf78ac481bb9d
@@ -14,7 +14,8 @@ ClassTypes:
 - Class: 213
   Script: {instanceID: 0}
 Assets:
-- Assets/difficulties/gph_difficultyHeroic.png
-- Assets/Tallest/gph_menuModeTallest.png
+- Assets/tallest/gph_menuModeTallest.png
+- Assets/timeattack/gph_menuModeTimeAttack.png
+- Assets/difficulties/gph_difficultyEpic.png
 - Assets/difficulties/gph_difficultyCrazy.png
 Dependencies: []
